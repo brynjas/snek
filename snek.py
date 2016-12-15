@@ -2,6 +2,11 @@ import pygame
 from pygame.locals import *
 import random
 
+#other files
+import sound
+import text
+import scores
+
 pygame.init()
 
 ScreenSize = 10
@@ -20,64 +25,19 @@ green = (0, 255, 0)
 blue = (0, 0, 255)
 orange = (255, 255, 0)
 
+
 def snek(ScreenSize, sneklist):
 	# The look of the snek
     for cordinates in sneklist:
         pygame.draw.rect(Display, green, [cordinates[0], cordinates[1], ScreenSize, ScreenSize])
 
-#reference https://pythonprogramming.net/displaying-text-pygame-screen/
-def text_objects(msg, font, color):
-    textSurface = font.render(msg, True, color)
-    return textSurface, textSurface.get_rect()
-
-def message_to_screen(msg, color):
-	# this is text in the middle center
-    largeText = pygame.font.SysFont("comicsansms", 24)
-    TextSurf, TextRect = text_objects(msg, largeText,color)
-    TextRect.center = ((800/2), (600/2))
-    Display.blit(TextSurf, TextRect)
-
-def message_up_screen(msg, color, size):
-	# this is text in the top center
-	font = pygame.font.Font(None, size)
-	text = font.render(msg, 1, (color))
-	textpos = text.get_rect(centerx=Display.get_width()/2)
-	Display.blit(text, textpos)
-    
-
-def get_high_score():
-	#read the higest score from txt file
-    try:
-        high_score_file = open("top_score.txt", "r")
-        high_score = int(high_score_file.read())
-        high_score_file.close()
-    except:
-        print("There is no high score yet.")
-
-    return (high_score)
-  
-def save_high_score(new_high_score):
-	# save the higest score in txt file it's saved 
-	top_score = get_high_score()
-	if new_high_score > top_score:
-		try:
-			high_score_file = open("top_score.txt", "w")
-			high_score_file.write(str(new_high_score))
-			high_score_file.close()
-		except:
-			print("Unable to save the high score.")
-
-def scoreboard(score):
-	#the scoreboard for the game 
-	return message_up_screen(str(score), white , 36)
-
 def gameOver(running, GameOver , score):
 	# when Game over it will update the score and check if its topscore, then it will display the result 
 	# player can quit or try again by hitting space 
 	Display.fill(white)
-	TopScore = get_high_score()
-	message_to_screen('GAME OVER', red)
-	message_up_screen(('Top Score: ' + str(TopScore) + ' Score: ' + str(score)), green, 36)
+	TopScore = scores.get_high_score()
+	text.message_to_screen('GAME OVER', red)
+	text.message_up_screen(('Top Score: ' + str(TopScore) + ' Score: ' + str(score)), green, 36)
 	pygame.display.update()
 	
 	for event in pygame.event.get():
@@ -96,21 +56,19 @@ def gameOver(running, GameOver , score):
 
 def paused(pause):
 	# when the player hit p it will pause the game until he hit any other key
-    largeText = pygame.font.SysFont("comicsansms",115)
-    TextSurf, TextRect = text_objects("Paused", largeText, red)
-    TextRect.center = ((800/2),(600/2))
-    Display.blit(TextSurf, TextRect)    
-    while pause:
-        for event in pygame.event.get():
-        	if event.type == pygame.QUIT:
-        		pygame.quit()
-        		quit()
-        	if event.type == pygame.KEYDOWN:
-        		pause = False
-        		return pause 
+	text.message_to_screen("Paused", red )
 
-        pygame.display.update()
-        clock.tick(15)  
+	while pause:
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				pygame.quit()
+				quit()
+			if event.type == pygame.KEYDOWN:
+				pause = False
+				return pause 
+
+		pygame.display.update()
+		clock.tick(15)  
 
 def game_loop():
     # Varibles
@@ -171,7 +129,8 @@ def game_loop():
 			snekX < 0 or
 			snekY > 600 - ScreenSize or
 			snekY < 0):
-				save_high_score(score)
+				scores.save_high_score(score)
+				sound.scream()
 				GameOver = True
 
 		#Draw and update changes
@@ -189,12 +148,13 @@ def game_loop():
 		#if the snek is on him self
 		for part in snekLst[:-1]:
 			if part == snekHead:
-				save_high_score(score)
+				sound.scream()
+				scores.save_high_score(score)
 				GameOver = True
 		#updating the snek
 		snek(ScreenSize, snekLst)
 		
-		scoreboard(score)
+		scores.scoreboard(score)
 		pygame.display.update()
 
 		# when the snek eats the apple
@@ -203,7 +163,8 @@ def game_loop():
 			AppleY = round(random.randrange(0, 600 - ScreenSize * 2) /10) * 10
 			snekLength += 5
 			score += 10
-			scoreboard(score)
+			sound.eat_apple()
+			scores.scoreboard(score)
      
 
 		clock.tick(FPS)
