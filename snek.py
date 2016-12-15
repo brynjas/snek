@@ -21,6 +21,7 @@ blue = (0, 0, 255)
 orange = (255, 255, 0)
 
 def snek(ScreenSize, sneklist):
+	# The look of the snek
     for cordinates in sneklist:
         pygame.draw.rect(Display, green, [cordinates[0], cordinates[1], ScreenSize, ScreenSize])
 
@@ -30,12 +31,14 @@ def text_objects(msg, font, color):
     return textSurface, textSurface.get_rect()
 
 def message_to_screen(msg, color):
+	# this is text in the middle center
     largeText = pygame.font.SysFont("comicsansms", 24)
     TextSurf, TextRect = text_objects(msg, largeText,color)
     TextRect.center = ((800/2), (600/2))
     Display.blit(TextSurf, TextRect)
 
 def message_up_screen(msg, color, size):
+	# this is text in the top center
 	font = pygame.font.Font(None, size)
 	text = font.render(msg, 1, (color))
 	textpos = text.get_rect(centerx=Display.get_width()/2)
@@ -43,6 +46,7 @@ def message_up_screen(msg, color, size):
     
 
 def get_high_score():
+	#read the higest score from txt file
     try:
         high_score_file = open("top_score.txt", "r")
         high_score = int(high_score_file.read())
@@ -53,6 +57,7 @@ def get_high_score():
     return (high_score)
   
 def save_high_score(new_high_score):
+	# save the higest score in txt file it's saved 
 	top_score = get_high_score()
 	if new_high_score > top_score:
 		try:
@@ -63,9 +68,12 @@ def save_high_score(new_high_score):
 			print("Unable to save the high score.")
 
 def scoreboard(score):
+	#the scoreboard for the game 
 	return message_up_screen(str(score), white , 36)
 
 def gameOver(running, GameOver , score):
+	# when Game over it will update the score and check if its topscore, then it will display the result 
+	# player can quit or try again by hitting space 
 	Display.fill(white)
 	TopScore = get_high_score()
 	message_to_screen('GAME OVER', red)
@@ -87,6 +95,7 @@ def gameOver(running, GameOver , score):
 	return(running,GameOver)
 
 def paused(pause):
+	# when the player hit p it will pause the game until he hit any other key
     largeText = pygame.font.SysFont("comicsansms",115)
     TextSurf, TextRect = text_objects("Paused", largeText, red)
     TextRect.center = ((800/2),(600/2))
@@ -104,7 +113,7 @@ def paused(pause):
         clock.tick(15)  
 
 def game_loop():
-    # game variables
+    # Varibles
 	score = 0
 
 	Running = True
@@ -112,7 +121,7 @@ def game_loop():
 	pause = False
 	#TopScore = high_score
 
-	# snek lead variables
+	# Snek variables
 	snekX = 800 / 2
 	snekY = 600 / 2
 	snekXupdate = 0
@@ -120,12 +129,12 @@ def game_loop():
 	snekLst = []
 	snekLength = 1
 
-    # apple stuff
+    # The apple
 	AppleX = round(random.randrange(0, 800 - ScreenSize * 2) / 10) * 10
 	AppleY = round(random.randrange(0, 600 - ScreenSize * 2) /10) * 10
    
 	while Running:
-       # event handling
+		# for the events in the game
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				pygame.quit()
@@ -153,7 +162,6 @@ def game_loop():
 		while GameOver:
 			gameOver(Running, GameOver, score)
 
-
         # snek speed
 		snekX += snekXupdate
 		snekY += snekYupdate
@@ -166,30 +174,30 @@ def game_loop():
 				save_high_score(score)
 				GameOver = True
 
-        # draw and updoot
+		#Draw and update changes
 		Display.fill(black)
 		pygame.draw.rect(Display, red, [AppleX, AppleY,ScreenSize, ScreenSize])
 
-		snek_head = []
-		snek_head.append(snekX)
-		snek_head.append(snekY)
-		snekLst.append(snek_head)
+		snekHead = []
+		snekHead.append(snekX)
+		snekHead.append(snekY)
+		snekLst.append(snekHead)
 
-        # prevent snek from increasing length constantly
 		if len(snekLst) > snekLength:
 			del snekLst[0]
 
+		#if the snek is on him self
 		for part in snekLst[:-1]:
-			if part == snek_head:
+			if part == snekHead:
 				save_high_score(score)
 				GameOver = True
-
+		#updating the snek
 		snek(ScreenSize, snekLst)
 		
 		scoreboard(score)
 		pygame.display.update()
 
-        # snek eat apple
+		# when the snek eats the apple
 		if snekX == AppleX and snekY == AppleY:
 			AppleX = round(random.randrange(0, 800 - ScreenSize * 2) / 10) * 10
 			AppleY = round(random.randrange(0, 600 - ScreenSize * 2) /10) * 10
@@ -199,7 +207,6 @@ def game_loop():
      
 
 		clock.tick(FPS)
-#get_high_score()
 game_loop()
 pygame.quit()
 quit()
