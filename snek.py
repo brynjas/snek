@@ -1,6 +1,7 @@
 import pygame
 from pygame.locals import *
 import random
+import os
 
 #other files
 import sound
@@ -12,6 +13,7 @@ pygame.init()
 ScreenSize = 10
 score = 0
 
+FirstLoop = True
 Display = pygame.display.set_mode((800, 600))
 pygame.display.set_caption('SNEK')
 clock = pygame.time.Clock()
@@ -35,11 +37,12 @@ def gameOver(running, GameOver , score):
 	# when Game over it will update the score and check if its topscore, then it will display the result 
 	# player can quit or try again by hitting space 
 	Display.fill(white)
+	image_load("gameover.png")
 	TopScore = scores.get_high_score()
-	text.message_to_screen('GAME OVER', red)
-	text.message_up_screen(('Top Score: ' + str(TopScore) + ' Score: ' + str(score)), green, 36)
+	#text.message_CenterCenter_screen('GAME OVER', red)
+	text.message_centerHigh_screen(('Top Score: ' + str(TopScore) + ' Score: ' + str(score)), green , 30)
 	pygame.display.update()
-	
+	global FirstLoop
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
 			pygame.quit()
@@ -47,16 +50,18 @@ def gameOver(running, GameOver , score):
 
 		if event.type == pygame.KEYDOWN:
 			if event.key == pygame.K_SPACE:
+				FirstLoop = False
 				game_loop()
 
 			if event.key == pygame.K_q:
 				running = False
 				GameOver = False
-	return(running,GameOver)
+	return(running,GameOver, FirstLoop)
+
 
 def paused(pause):
 	# when the player hit p it will pause the game until he hit any other key
-	text.message_to_screen("Paused", red )
+	text.message_CenterCenter_screen("Paused", red )
 
 	while pause:
 		for event in pygame.event.get():
@@ -70,10 +75,32 @@ def paused(pause):
 		pygame.display.update()
 		clock.tick(15)  
 
+def image_load(img):
+	img = 'doc/img/' + img
+	title = pygame.image.load(img)
+	Display.blit(title, (0, 0))
+	pygame.display.flip()
+	#text.message_to_screen(text , green)
+	#pygame.display.update()
+	
+
+def title():
+	waitGame = True
+	image_load('start.png')
+	sound.music_play('title_music.ogg')
+
+	text.message_CenterCenter_screen("TEST" , green)
+	pygame.display.update()
+
+
+	while waitGame:
+		for event in pygame.event.get():         
+			if event.type == pygame.KEYDOWN:
+				waitGame = False
 def game_loop():
     # Varibles
 	score = 0
-
+	
 	Running = True
 	GameOver = False
 	pause = False
@@ -86,6 +113,10 @@ def game_loop():
 	snekYupdate = 0
 	snekLst = []
 	snekLength = 1
+	global FirstLoop
+	# if its the first game then play the intro else not
+	if FirstLoop:
+		title()
 
     # The apple
 	AppleX = round(random.randrange(0, 800 - ScreenSize * 2) / 10) * 10
@@ -93,6 +124,7 @@ def game_loop():
    
 	while Running:
 		# for the events in the game
+		
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				pygame.quit()
@@ -118,7 +150,7 @@ def game_loop():
 						snekYupdate = 0
 						snekXupdate = ScreenSize
 		while GameOver:
-			gameOver(Running, GameOver, score)
+			gameOver(Running, GameOver, score )
 
         # snek speed
 		snekX += snekXupdate
@@ -166,7 +198,6 @@ def game_loop():
 			sound.eat_apple()
 			scores.scoreboard(score)
      
-
 		clock.tick(FPS)
 game_loop()
 pygame.quit()

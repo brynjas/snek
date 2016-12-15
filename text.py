@@ -20,16 +20,40 @@ def text_objects(msg, font, color):
     textSurface = font.render(msg, True, color)
     return textSurface, textSurface.get_rect()
 
-def message_to_screen(msg, color):
-	# this is text in the middle center
-    largeText = pygame.font.SysFont("comicsansms", 115)
-    TextSurf, TextRect = text_objects(msg, largeText,color)
-    TextRect.center = ((800/2), (600/2))
-    Display.blit(TextSurf, TextRect)
+def message_CenterCenter_screen(msg, color):
+	Myfont = pygame.font.Font("doc/fonts/8bit.TTF", 46)
+	TextSurf, TextRect = text_objects(msg, Myfont,color)
+	TextRect.center = ((800/2), (600/2))
+	Display.blit(TextSurf, TextRect)
+
+def message_CenterHiger_screen(msg, color):
+	Myfont = pygame.font.Font("doc/fonts/8bit.TTF", 46)
+	TextSurf, TextRect = text_objects(msg, Myfont,color)
+	text = Myfont.render(msg, 1, (color))
+	textpos = text.get_rect(centerx=Display.get_width()/2, centery=Display.get_width()/5)
+	Display.blit(TextSurf, TextRect)
+
+
+
 
 def message_up_screen(msg, color, size):
-	# this is text in the top center
-	font = pygame.font.Font(None, size)
+	font = pygame.font.Font("doc/fonts/Peepo.ttf", size)
 	text = font.render(msg, 1, (color))
 	textpos = text.get_rect(centerx=Display.get_width()/2)
+
 	Display.blit(text, textpos)
+
+
+def message_centerHigh_screen(msg, color, size):
+	font = pygame.font.Font("doc/fonts/Peepo.ttf", size)
+	text = font.render(msg, 1, (color))
+	textpos = text.get_rect(centerx=Display.get_width()/2, centery=Display.get_width()/5)
+
+	Display.blit(text, textpos)
+
+
+
+
+
+
+
