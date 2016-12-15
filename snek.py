@@ -2,7 +2,6 @@ import pygame
 from pygame.locals import *
 import random
 
-
 pygame.init()
 
 ScreenSize = 10
@@ -66,8 +65,8 @@ def save_high_score(new_high_score):
 def scoreboard(score):
 	return message_up_screen(str(score), white , 36)
 
-def gameOver(running, game_over , score):
-	#Display.fill(white)
+def gameOver(running, GameOver , score):
+	Display.fill(white)
 	TopScore = get_high_score()
 	message_to_screen('GAME OVER', red)
 	message_up_screen(('Top Score: ' + str(TopScore) + ' Score: ' + str(score)), green, 36)
@@ -84,8 +83,8 @@ def gameOver(running, game_over , score):
 
 			if event.key == pygame.K_q:
 				running = False
-				game_over = False
-	return(running,game_over)
+				GameOver = False
+	return(running,GameOver)
 
 def paused(pause):
     largeText = pygame.font.SysFont("comicsansms",115)
@@ -108,8 +107,8 @@ def game_loop():
     # game variables
 	score = 0
 
-	running = True
-	game_over = False
+	Running = True
+	GameOver = False
 	pause = False
 	#TopScore = high_score
 
@@ -122,10 +121,10 @@ def game_loop():
 	snekLength = 1
 
     # apple stuff
-	rand_apple_x = round(random.randrange(0, 800 - ScreenSize * 2) / 10) * 10
-	rand_apple_y = round(random.randrange(0, 600 - ScreenSize * 2) /10) * 10
+	AppleX = round(random.randrange(0, 800 - ScreenSize * 2) / 10) * 10
+	AppleY = round(random.randrange(0, 600 - ScreenSize * 2) /10) * 10
    
-	while running:
+	while Running:
        # event handling
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
@@ -151,8 +150,8 @@ def game_loop():
 					if snekXupdate != -ScreenSize:
 						snekYupdate = 0
 						snekXupdate = ScreenSize
-		while game_over:
-			gameOver(running, game_over, score)
+		while GameOver:
+			gameOver(Running, GameOver, score)
 
 
         # snek speed
@@ -165,11 +164,11 @@ def game_loop():
 			snekY > 600 - ScreenSize or
 			snekY < 0):
 				save_high_score(score)
-				game_over = True
+				GameOver = True
 
         # draw and updoot
 		Display.fill(black)
-		pygame.draw.rect(Display, red, [rand_apple_x, rand_apple_y,ScreenSize, ScreenSize])
+		pygame.draw.rect(Display, red, [AppleX, AppleY,ScreenSize, ScreenSize])
 
 		snek_head = []
 		snek_head.append(snekX)
@@ -183,19 +182,17 @@ def game_loop():
 		for part in snekLst[:-1]:
 			if part == snek_head:
 				save_high_score(score)
-				game_over = True
+				GameOver = True
 
 		snek(ScreenSize, snekLst)
 		
 		scoreboard(score)
 		pygame.display.update()
 
-
-
         # snek eat apple
-		if snekX == rand_apple_x and snekY == rand_apple_y:
-			rand_apple_x = round(random.randrange(0, 800 - ScreenSize * 2) / 10) * 10
-			rand_apple_y = round(random.randrange(0, 600 - ScreenSize * 2) /10) * 10
+		if snekX == AppleX and snekY == AppleY:
+			AppleX = round(random.randrange(0, 800 - ScreenSize * 2) / 10) * 10
+			AppleY = round(random.randrange(0, 600 - ScreenSize * 2) /10) * 10
 			snekLength += 5
 			score += 10
 			scoreboard(score)
