@@ -2,8 +2,9 @@ import pygame
 import os
 
 
-def music_play(song):
-    _path = os.path.join('doc', 'sound', song)
+def music_play():
+    
+    _path = os.path.join('doc', 'sound', 'title.mp3')
     pygame.mixer.music.load(_path)
     pygame.mixer.music.play(-1)
 
@@ -17,15 +18,10 @@ def eat_apple():
     sound.play()
 
 
-def begin():
-    sound = pygame.mixer.Sound(os.path.join('doc', 'sound', 'beginning.ogg'))
-    sound.play()
-
-
 def game_over():
-    sound = pygame.mixer.Sound(os.path.join('doc', 'sound', 'gameover.ogg'))
+    music_stop()
+    sound = pygame.mixer.Sound(os.path.join('doc', 'sound', 'gameover.mp3'))
     sound.play()
-
 
 
 def scream():
@@ -33,9 +29,7 @@ def scream():
     sound.play()
 
 
-def startgame():
-    sound = pygame.mixer.Sound(os.path.join('doc', 'sound', 'startgame.ogg'))
-    sound.play()
+
 
 
 

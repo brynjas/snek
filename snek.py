@@ -24,8 +24,6 @@ black = (0, 0, 0)
 white = (255, 255, 255)
 red = (255, 0, 0)
 green = (0, 255, 0)
-blue = (0, 0, 255)
-orange = (255, 255, 0)
 
 
 def snek(ScreenSize, sneklist):
@@ -36,10 +34,9 @@ def snek(ScreenSize, sneklist):
 def gameOver(running, GameOver , score):
 	# when Game over it will update the score and check if its topscore, then it will display the result 
 	# player can quit or try again by hitting space 
-	Display.fill(white)
-	image_load("gameover.png")
+		
+	image_load("gameover2.png")
 	TopScore = scores.get_high_score()
-	#text.message_CenterCenter_screen('GAME OVER', red)
 	text.message_centerHigh_screen(('Top Score: ' + str(TopScore) + ' Score: ' + str(score)), green , 30)
 	pygame.display.update()
 	global FirstLoop
@@ -62,6 +59,7 @@ def gameOver(running, GameOver , score):
 def paused(pause):
 	# when the player hit p it will pause the game until he hit any other key
 	text.message_CenterCenter_screen("Paused", red )
+	sound.music_stop()
 
 	while pause:
 		for event in pygame.event.get():
@@ -69,6 +67,7 @@ def paused(pause):
 				pygame.quit()
 				quit()
 			if event.type == pygame.KEYDOWN:
+				sound.music_play()				
 				pause = False
 				return pause 
 
@@ -76,35 +75,30 @@ def paused(pause):
 		clock.tick(15)  
 
 def image_load(img):
+	# function to load img on the screen
 	img = 'doc/img/' + img
 	title = pygame.image.load(img)
 	Display.blit(title, (0, 0))
 	pygame.display.flip()
-	#text.message_to_screen(text , green)
-	#pygame.display.update()
+
 	
 
 def title():
+	# function for the intro when played first 
 	waitGame = True
-	image_load('start.png')
-	sound.music_play('title_music.ogg')
-
-	text.message_CenterCenter_screen("TEST" , green)
+	image_load('start2.png')
 	pygame.display.update()
-
-
 	while waitGame:
 		for event in pygame.event.get():         
 			if event.type == pygame.KEYDOWN:
+				sound.music_play()
 				waitGame = False
 def game_loop():
     # Varibles
 	score = 0
-	
 	Running = True
 	GameOver = False
 	pause = False
-	#TopScore = high_score
 
 	# Snek variables
 	snekX = 800 / 2
@@ -113,10 +107,13 @@ def game_loop():
 	snekYupdate = 0
 	snekLst = []
 	snekLength = 1
+	# FirstLoop is varible to see if its the firstloop of the game
 	global FirstLoop
 	# if its the first game then play the intro else not
 	if FirstLoop:
 		title()
+	
+	sound.music_play()
 
     # The apple
 	AppleX = round(random.randrange(0, 800 - ScreenSize * 2) / 10) * 10
@@ -124,7 +121,6 @@ def game_loop():
    
 	while Running:
 		# for the events in the game
-		
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				pygame.quit()
@@ -149,6 +145,7 @@ def game_loop():
 					if snekXupdate != -ScreenSize:
 						snekYupdate = 0
 						snekXupdate = ScreenSize
+		
 		while GameOver:
 			gameOver(Running, GameOver, score )
 
@@ -164,6 +161,7 @@ def game_loop():
 				scores.save_high_score(score)
 				sound.scream()
 				GameOver = True
+				sound.music_stop()
 
 		#Draw and update changes
 		Display.fill(black)
