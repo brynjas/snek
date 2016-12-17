@@ -45,7 +45,7 @@ def message_up_screen(msg, color, size):
 
 
 def message_centerHigh_screen(msg, color, size):
-	font = pygame.font.Font("doc/fonts/Peepo.ttf", size)
+	font = pygame.font.Font("doc/fonts/upheavtt.ttf", size)
 	text = font.render(msg, 1, (color))
 	textpos = text.get_rect(centerx=Display.get_width()/2, centery=Display.get_width()/5)
 

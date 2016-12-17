@@ -37,7 +37,7 @@ def gameOver(running, GameOver , score):
 		
 	image_load("gameover2.png")
 	TopScore = scores.get_high_score()
-	text.message_centerHigh_screen(('Top Score: ' + str(TopScore) + ' Score: ' + str(score)), green , 30)
+	text.message_centerHigh_screen(('GAME SCORE: ' + str(score) + '   TOP SCORE: ' + str(TopScore)), green , 40)
 	pygame.display.update()
 	global FirstLoop
 	for event in pygame.event.get():
